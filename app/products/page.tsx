@@ -7,6 +7,7 @@ export default async function ProductsPage() {
   return (
     <main style={{ maxWidth: 1200, margin: "0 auto", padding: 24 }}>
       <h1>Produkter fra Shopify</h1>
+      {products.length === 0 && <p>Fant ingen produkter.</p>}
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
