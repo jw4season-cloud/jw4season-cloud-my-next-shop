@@ -1,4 +1,4 @@
-import { getProducts } from "@/lib/shopify";
+import { getProducts } from "../../lib/shopify";
 import Image from "next/image";
 
 export default async function ProductsPage() {
@@ -20,7 +20,7 @@ export default async function ProductsPage() {
             padding: 12,
             textAlign: "center"
           }}>
-            {p.images.edges[0] && (
+            {p.images?.edges?.[0] && (
               <Image
                 src={p.images.edges[0].node.url}
                 alt={p.images.edges[0].node.altText || p.title}
@@ -29,7 +29,9 @@ export default async function ProductsPage() {
               />
             )}
             <h2>{p.title}</h2>
-            <p>{p.variants.edges[0].node.price.amount} kr</p>
+            {p.variants?.edges?.[0]?.node?.price?.amount && (
+              <p>{p.variants.edges[0].node.price.amount} kr</p>
+            )}
           </article>
         ))}
       </div>
