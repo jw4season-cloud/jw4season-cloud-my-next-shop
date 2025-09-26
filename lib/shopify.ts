@@ -1,4 +1,5 @@
-import { GraphQLClient } from "graphql-request";
+// lib/shopify.ts
+import { GraphQLClient, gql } from "graphql-request";
 
 const endpoint = `https://${process.env.SHOPIFY_STORE_DOMAIN}/api/2023-07/graphql.json`;
 
@@ -8,22 +9,46 @@ const client = new GraphQLClient(endpoint, {
   },
 });
 
-export async function getProducts() {
-  const query = `
-    {
-      products(first: 50) {
+// Henter ALLE produkter ved å loope over sider (cursor pagination)
+export async function getAllProducts(limitPerPage = 50) {
+  const query = gql`
+    query GetProducts($first: Int!, $after: String) {
+      products(first: $first, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
         edges {
           node {
             id
             title
             handle
+            description
             images(first: 1) { edges { node { url altText } } }
-            variants(first: 1) { edges { node { price { amount } } } }
+            variants(first: 1) { edges { node { price { amount currencyCode } } } }
           }
         }
       }
     }
   `;
-  const res = await client.request(query);
-  return res.products.edges.map((e: any) => e.node);
+
+  let after: string | null = null;
+  let hasNextPage = true;
+  const items: any[] = [];
+
+  while (hasNextPage) {
+    const data = await client.request(query, { first: limitPerPage, after });
+    const { edges, pageInfo } = data.products;
+    items.push(...edges.map((e: any) => e.node));
+    hasNextPage = pageInfo?.hasNextPage;
+    after = pageInfo?.endCursor ?? null;
+  }
+
+  return items;
+}
+
+// Behold denne hvis /products-siden din allerede kaller getProducts()
+export async function getProducts() {
+  // Om du vil begrense i UI kan du slice: (await getAllProducts()).slice(0, 50)
+  return getAllProducts(50);
 }
