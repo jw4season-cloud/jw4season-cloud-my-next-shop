@@ -1,11 +1,13 @@
 {
+  "name": "my-next-shop",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-  "prebuild": "node -e \"const fs=require('fs');const c=['app/page.tsx','app\\\\page.tsx','app/page.','app\\\\page.'];for(const f of c){if(fs.existsSync(f)){fs.unlinkSync(f);console.log('[prebuild] removed',f);}}console.log('[prebuild] done');\"",
-  "dev": "next dev --turbopack",
-  "build": "next build",
-  "start": "next start",
-  "lint": "eslint"
-}
+    "prebuild": "node -e \"const fs=require('fs');const c=['app/page.tsx','app\\\\page.tsx','app/page.','app\\\\page.'];for(const f of c){if(fs.existsSync(f)){fs.unlinkSync(f);console.log('[prebuild] removed',f);}}console.log('[prebuild] done');\"",
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
   },
   "dependencies": {
     "graphql-request": "^7.2.0",
@@ -25,3 +27,4 @@
     "typescript": "^5"
   }
 }
+
