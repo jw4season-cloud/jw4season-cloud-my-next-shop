@@ -1,4 +1,5 @@
-﻿import { GraphQLClient, gql } from "graphql-request";
+// lib/shopify.ts
+import { GraphQLClient, gql } from "graphql-request";
 
 const SHOPIFY_STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN!;
 const SHOPIFY_STOREFRONT_TOKEN =
@@ -24,6 +25,10 @@ export type Product = {
   variants?: { edges: { node: { price?: { amount: string } } }[] };
 };
 
+type ProductsResponse = {
+  products: { edges: { node: Product }[] };
+};
+
 export async function getProducts(limit: number = 12): Promise<Product[]> {
   const query = gql`
     query Products($limit: Int!) {
@@ -44,11 +49,7 @@ export async function getProducts(limit: number = 12): Promise<Product[]> {
     }
   `;
 
-  // 👇 Fortell hvilken struktur vi forventer
-  type ProductsResponse = {
-    products: { edges: { node: Product }[] };
-  };
-
+  // 👉 Typ responsen her
   const data = await client.request<ProductsResponse>(query, { limit });
 
   return (data.products?.edges ?? []).map((e) => e.node);
