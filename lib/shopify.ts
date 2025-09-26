@@ -43,8 +43,13 @@ export async function getProducts(limit: number = 12): Promise<Product[]> {
       }
     }
   `;
-  const data = await client.request(query, { limit });
 
-  // 👇 Bytt ut any med riktig type
-  return (data.products?.edges ?? []).map((e: { node: Product }) => e.node);
+  // 👇 Fortell hvilken struktur vi forventer
+  type ProductsResponse = {
+    products: { edges: { node: Product }[] };
+  };
+
+  const data = await client.request<ProductsResponse>(query, { limit });
+
+  return (data.products?.edges ?? []).map((e) => e.node);
 }
