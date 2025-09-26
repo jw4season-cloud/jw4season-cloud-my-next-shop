@@ -11,7 +11,7 @@ const client = new GraphQLClient(endpoint, {
 export async function getProducts() {
   const query = `
     {
-      products(first: 12) {
+      products(first: 50) {
         edges {
           node {
             id
