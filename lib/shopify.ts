@@ -44,5 +44,7 @@ export async function getProducts(limit: number = 12): Promise<Product[]> {
     }
   `;
   const data = await client.request(query, { limit });
-  return (data.products?.edges ?? []).map((e: any) => e.node) as Product[];
+
+  // 👇 Bytt ut any med riktig type
+  return (data.products?.edges ?? []).map((e: { node: Product }) => e.node);
 }
